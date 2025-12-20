@@ -1,0 +1,340 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "pricing": "Pricing",
+    "about": "About Us",
+    "login": "Login",
+    "register": "Register",
+    "dashboard": "Dashboard"
+  },
+  "hero": {
+    "title": "Professional Shipment Tracking Platform",
+    "subtitle": "Manage your customers' shipments easily and add tracking service to your website with just one step.",
+    "getStarted": "Get Started",
+    "watchDemo": "Watch How It Works"
+  },
+  "features": {
+    "title": "Our Features",
+    "subtitle": "Everything you need to manage shipments professionally",
+    "badge": "Powerful Features",
+    "customerManagement": {
+      "title": "Customer Management",
+      "description": "Add, edit, and search your customers easily",
+      "items": [
+        "Add and manage customer profiles",
+        "Store contact information and addresses",
+        "Quick search and filtering",
+        "View customer shipment history"
+      ]
+    },
+    "shipmentTracking": {
+      "title": "Shipment Tracking",
+      "description": "Track all your shipments in real-time with status updates",
+      "items": [
+        "Real-time status updates",
+        "Complete shipment timeline",
+        "Multiple status stages",
+        "Delivery notifications"
+      ]
+    },
+    "autoTracking": {
+      "title": "Auto Tracking Numbers",
+      "description": "Automatically generate unique tracking numbers for each shipment",
+      "items": [
+        "Automatic tracking number generation",
+        "Unique IDs for every shipment",
+        "Easy to remember format",
+        "No manual entry required"
+      ]
+    },
+    "embedWidget": {
+      "title": "Embeddable Widget",
+      "description": "Add tracking functionality to any website with one line of code",
+      "items": [
+        "Simple JavaScript code snippet",
+        "Works on any website",
+        "Customizable appearance",
+        "Responsive design"
+      ]
+    },
+    "dashboard": {
+      "title": "Comprehensive Dashboard",
+      "description": "Monitor all your operations from one place",
+      "items": [
+        "Overview of all operations",
+        "Key statistics and metrics",
+        "Recent shipments list",
+        "Quick actions menu"
+      ]
+    },
+    "multilingual": {
+      "title": "Multi-language Support",
+      "description": "Full support for Arabic and English",
+      "items": [
+        "Arabic and English interfaces",
+        "RTL layout support",
+        "Easy language switching",
+        "Translated content"
+      ]
+    },
+    "apiAccess": {
+      "title": "API Access",
+      "description": "Integrate with your systems via RESTful API",
+      "items": [
+        "RESTful API endpoints",
+        "Integrate with your systems",
+        "Secure authentication",
+        "Complete documentation (Pro plan)"
+      ]
+    },
+    "cta": {
+      "title": "Ready to streamline your shipping?",
+      "subtitle": "Join thousands of companies using TrakoShip to manage their logistics efficiently.",
+      "button": "Get Started Now"
+    }
+  },
+  "whyUs": {
+    "title": "Why Choose TrakoShip?",
+    "speed": "Fast and efficient shipment management",
+    "clarity": "Clear tracking for you and your customers",
+    "simplicity": "Easy to use, no technical knowledge required"
+  },
+  "cta": {
+    "title": "Start Your Free Trial Now",
+    "subtitle": "Join hundreds of shipping companies using TrakoShip",
+    "button": "Start Free Trial"
+  },
+  "pricing": {
+    "title": "Choose Your Plan",
+    "subtitle": "Flexible pricing for businesses of all sizes",
+    "monthly": "per month",
+    "free": {
+      "name": "Free",
+      "customers": "50 Customers",
+      "shipments": "500 Shipments",
+      "features": "Basic Features",
+      "support": "Community Support"
+    },
+    "basic": {
+      "name": "Basic",
+      "customers": "200 Customers",
+      "shipments": "2,000 Shipments",
+      "features": "All Features",
+      "support": "Email Support"
+    },
+    "pro": {
+      "name": "Pro",
+      "customers": "Unlimited Customers",
+      "shipments": "Unlimited Shipments",
+      "features": "All Features + API",
+      "support": "Priority Support"
+    },
+    "startTrial": "Start Free Trial",
+    "choosePlan": "Choose Plan"
+  },
+  "about": {
+    "title": "About TrakoShip",
+    "tagline": "Building the future of logistics technology, one shipment at a time.",
+    "mission": {
+      "title": "Our Mission",
+      "content": "We aim to provide small and medium shipping companies with professional tracking tools that were previously only available to large corporations."
+    },
+    "problem": {
+      "title": "The Problem We Solve",
+      "content": "Many small shipping companies struggle to provide real-time tracking to their customers. TrakoShip makes this easy and affordable."
+    },
+    "vision": {
+      "title": "Our Vision",
+      "content": "To become the leading shipment tracking platform for small and medium businesses worldwide."
+    },
+    "values": {
+      "title": "Our Values",
+      "speed": "Speed: Fast response and quick setup",
+      "clarity": "Clarity: Clear information for everyone",
+      "simplicity": "Simplicity: Easy to use for all"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login to Your Account",
+      "subtitle": "Welcome back! Please sign in to continue managing your shipments.",
+      "email": "Email Address",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "submit": "Login",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    },
+    "register": {
+      "title": "Create Your Account",
+      "subtitle": "Create your account to start tracking shipments professionally.",
+      "companyName": "Company Name",
+      "email": "Email Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "acceptTerms": "I accept the terms and conditions",
+      "submit": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "stats": {
+      "totalCustomers": "Total Customers",
+      "activeShipments": "Active Shipments",
+      "delivered": "Delivered",
+      "pending": "Pending"
+    },
+    "recentShipments": "Recent Shipments",
+    "quickActions": {
+      "title": "Quick Actions",
+      "addCustomer": "Add Customer",
+      "addShipment": "Add Shipment"
+    },
+    "customers": {
+      "title": "Customers",
+      "add": "Add Customer",
+      "total": "total customers",
+      "search": "Search customers...",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "addressPlaceholder": "Enter customer address...",
+      "shipments": "Shipments",
+      "actions": "Actions",
+      "edit": "Edit Customer",
+      "confirmDelete": "Are you sure you want to delete this customer?",
+      "empty": {
+        "title": "No customers yet",
+        "description": "Add your first customer to start managing shipments!"
+      }
+    },
+    "shipments": {
+      "title": "Shipments",
+      "add": "Add Shipment",
+      "total": "total shipments",
+      "trackingNumber": "Tracking Number",
+      "customer": "Customer",
+      "status": "Status",
+      "origin": "Origin",
+      "destination": "Destination",
+      "date": "Date",
+      "actions": "Actions",
+      "selectCustomer": "Select customer...",
+      "estimatedDelivery": "Estimated Delivery",
+      "notes": "Notes",
+      "notesPlaceholder": "Optional notes...",
+      "updateStatus": "Update Status",
+      "selectStatus": "Select status...",
+      "currentLocation": "Current Location",
+      "currentLocationPlaceholder": "Optional",
+      "confirmDelete": "Are you sure you want to delete this shipment?",
+      "trackingUrl": "Tracking URL",
+      "embedCode": "Embed Code (Widget)",
+      "viewTracking": "View Tracking Page",
+      "empty": {
+        "title": "No shipments yet",
+        "description": "Create your first shipment to start tracking!"
+      },
+      "success": {
+        "title": "Shipment Created Successfully!",
+        "description": "Your shipment has been created and a tracking number has been generated."
+      },
+      "statuses": {
+        "pending": "Pending",
+        "pickedUp": "Picked Up",
+        "inTransit": "In Transit",
+        "outForDelivery": "Out for Delivery",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled",
+        "returned": "Returned"
+      },
+      "new": {
+        "title": "Create New Shipment",
+        "subtitle": "Fill in the details below to create a new shipment",
+        "senderName": "Sender Name",
+        "senderAddress": "Sender Address",
+        "receiverName": "Receiver Name",
+        "receiverAddress": "Receiver Address",
+        "weight": "Weight (kg)",
+        "content": "Content Description"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "pageDescription": "Manage your account settings, company profile, and integration preferences.",
+      "profile": "Company Profile",
+      "companyName": "Company Name",
+      "emailAddress": "Email Address",
+      "memberSince": "Member Since",
+      "profileDescription": "Your business information and account details",
+      "plan": "Current Plan",
+      "planDescription": "Your subscription and plan limits",
+      "upgrade": "Upgrade Plan",
+      "upgradeDescription": "Unlock all features and remove limits",
+      "features": {
+        "limit50": "50 Customers Limit",
+        "limit500": "500 Monthly Shipments",
+        "basicFeatures": "Basic Dashboard Features",
+        "limit200": "200 Customers Limit",
+        "limit2000": "2,000 Monthly Shipments",
+        "advancedAnalytics": "Advanced Analytics",
+        "emailSupport": "Email Support",
+        "unlimitedCustomers": "Unlimited Customers",
+        "unlimitedShipments": "Unlimited Shipments",
+        "apiAccess": "Full API Access",
+        "prioritySupport": "Priority 24/7 Support"
+      },
+      "widget": {
+        "title": "Tracking Widget Integration",
+        "description": "Embed a professional tracking interface directly on your website. Your customers can track shipments without leaving your domain.",
+        "whiteLabel": "White-Label Solution",
+        "secure": "Secure & Isolated",
+        "secureDesc": "Customers only see YOUR company's shipments.",
+        "zeroBranding": "Zero Branding",
+        "zeroBrandingDesc": "No TrakoShip logos. Looks like your own tool.",
+        "companyId": "Your Company ID",
+        "embedCode": "Embed Code",
+        "preview": "Preview Widget",
+        "copyId": "Copy ID",
+        "copyCode": "Copy Code",
+        "copied": "Copied",
+        "instruction": "Paste this code before the closing </body> tag of your website."
+      },
+      "errorLoading": "Error loading profile",
+      "refreshPage": "Please try refreshing the page",
+      "apiKey": "API Key"
+    }
+  },
+  "tracking": {
+    "title": "Track Your Shipment",
+    "enterTracking": "Enter tracking number",
+    "search": "Search",
+    "status": "Status",
+    "origin": "Origin",
+    "destination": "Destination",
+    "estimatedDelivery": "Estimated Delivery",
+    "timeline": "Timeline",
+    "notFound": "Shipment not found"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "backToHome": "Back to Homepage",
+    "copy": "Copy",
+    "close": "Close",
+    "copied": "copied to clipboard",
+    "create": "Create"
+  }
+}

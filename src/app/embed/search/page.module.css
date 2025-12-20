@@ -1,0 +1,367 @@
+.widgetContainer {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  padding: 2rem 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1e293b;
+}
+
+.companyHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.companyName {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.companySubtitle {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.searchBox {
+  margin-bottom: 2rem;
+}
+
+.searchForm {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 250px;
+  padding: 0.875rem 1.25rem;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.searchInput:disabled {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+.searchButton {
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.searchButton:hover:not(:disabled) {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.searchButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.searchButton:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #64748b;
+}
+
+.spinner {
+  margin: 0 auto 1rem;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #2563eb;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background-color: #fef2f2;
+  border: 2px solid #fecaca;
+  border-radius: 0.75rem;
+  margin-top: 1rem;
+}
+
+.errorIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.error h3 {
+  color: #dc2626;
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.error p {
+  color: #991b1b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.results {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid #e2e8f0;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.trackingNumber {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2563eb;
+  font-family: 'Courier New', monospace;
+  margin: 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.badge.pending { background-color: #fef3c7; color: #92400e; }
+.badge.picked_up { background-color: #dbeafe; color: #1e40af; }
+.badge.in_transit { background-color: #ddd6fe; color: #5b21b6; }
+.badge.out_for_delivery { background-color: #e0e7ff; color: #3730a3; }
+.badge.delivered { background-color: #d1fae5; color: #065f46; }
+.badge.cancelled { background-color: #fee2e2; color: #991b1b; }
+.badge.returned { background-color: #fed7aa; color: #9a3412; }
+
+.route {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+}
+
+.routePoint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+}
+
+.routeLabel {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.routeValue {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.routeArrow {
+  font-size: 2rem;
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.currentLocation {
+  padding: 1rem 1.5rem;
+  background-color: #eff6ff;
+  border-left: 4px solid #2563eb;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: #1e40af;
+}
+
+.delivery {
+  padding: 1rem 1.5rem;
+  background-color: #f0fdf4;
+  border-left: 4px solid #10b981;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: #047857;
+}
+
+.timeline {
+  margin-top: 2rem;
+}
+
+.timeline h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 1.5rem 0;
+}
+
+.timelineItems {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timelineItems::before {
+  content: '';
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background-color: #e2e8f0;
+}
+
+.timelineItem {
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.timelineItem:last-child {
+  padding-bottom: 0;
+}
+
+.timelineDot {
+  position: absolute;
+  left: -1.5rem;
+  top: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: #2563eb;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 2px #2563eb;
+}
+
+.timelineContent {
+  background-color: #f8fafc;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.timelineStatus {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.timelineLocation {
+  color: #2563eb;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.timelineDescription {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.timelineDate {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .widgetContainer {
+    padding: 1.5rem 1rem;
+  }
+
+  .companyName {
+    font-size: 1.5rem;
+  }
+
+  .searchForm {
+    flex-direction: column;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+
+  .searchButton {
+    width: 100%;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .route {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .routeArrow {
+    transform: rotate(90deg);
+  }
+}
+

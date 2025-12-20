@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  FREE
+  BASIC
+  PRO
+}
+
+enum ShipmentStatus {
+  PENDING
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+model User {
+  id          String     @id @default(cuid())
+  email       String     @unique
+  password    String
+  companyName String
+  plan        Plan       @default(FREE)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  customers   Customer[]
+  shipments   Shipment[]
+  
+  @@map("users")
+}
+
+model Customer {
+  id        String     @id @default(cuid())
+  userId    String
+  name      String
+  phone     String?
+  email     String?
+  address   String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shipments Shipment[]
+  
+  @@index([userId])
+  @@map("customers")
+}
+
+model Shipment {
+  id              String          @id @default(cuid())
+  trackingNumber  String          @unique
+  userId          String
+  customerId      String
+  status          ShipmentStatus  @default(PENDING)
+  origin          String
+  destination     String
+  currentLocation String?
+  estimatedDelivery DateTime?
+  actualDelivery  DateTime?
+  notes           String?
+  timeline        Json            @default("[]")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customer        Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([customerId])
+  @@index([trackingNumber])
+  @@map("shipments")
+}
+
