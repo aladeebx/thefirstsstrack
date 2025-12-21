@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { validateTrackingNumber } from '@/lib/tracking';
 
+export const dynamic = 'force-dynamic';
+
 // GET shipment by tracking number with userId filter (public, no auth required)
 // This endpoint ensures customers can only see shipments from their company
 export async function GET(request: NextRequest) {

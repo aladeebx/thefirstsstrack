@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { validateTrackingNumber } from '@/lib/tracking';
 
+export const dynamic = 'force-dynamic';
+
 // GET shipment by tracking number (public, no auth required)
 // Supports optional userId query parameter for company-specific filtering
 export async function GET(

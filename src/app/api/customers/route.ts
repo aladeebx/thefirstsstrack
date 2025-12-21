@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { canAddCustomer } from '@/lib/plans';
 
+export const dynamic = 'force-dynamic';
+
 // GET all customers for current user
 export async function GET(request: NextRequest) {
   try {

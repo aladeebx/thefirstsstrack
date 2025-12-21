@@ -4,6 +4,8 @@ import { getCurrentUser } from '@/lib/auth';
 import { canAddShipment } from '@/lib/plans';
 import { generateTrackingNumber } from '@/lib/tracking';
 
+export const dynamic = 'force-dynamic';
+
 // GET all shipments for current user
 export async function GET(request: NextRequest) {
   try {
