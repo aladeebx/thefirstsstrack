@@ -5,13 +5,13 @@ import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Package, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Copy, 
-  CheckCircle2, 
+import {
+  Package,
+  Plus,
+  Edit,
+  Trash2,
+  Copy,
+  CheckCircle2,
   X,
   MapPin,
   Calendar,
@@ -25,6 +25,9 @@ import { Badge } from '@/components/ui/Badge';
 import { FloatingInput } from '@/components/ui/FloatingInput';
 import { AnimatedSection } from '@/components/ui/animations/AnimatedSection';
 import { StaggerContainer, StaggerItem } from '@/components/ui/animations/StaggerContainer';
+import { ShipmentTypeSelector } from '@/components/shipment/ShipmentTypeSelector';
+import { TransportMethodSelector } from '@/components/shipment/TransportMethodSelector';
+import { CargoUnitsSelector } from '@/components/shipment/CargoUnitsSelector';
 
 interface Shipment {
   id: string;
@@ -33,6 +36,9 @@ interface Shipment {
   origin: string;
   destination: string;
   createdAt: string;
+  shipmentType?: string;
+  transportMethod?: string;
+  cargoUnits?: { type: string; quantity: number };
   customer: {
     id: string;
     name: string;
@@ -78,6 +84,7 @@ export default function ShipmentsPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [newTrackingNumber, setNewTrackingNumber] = useState('');
   const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
@@ -87,6 +94,9 @@ export default function ShipmentsPage() {
     destination: '',
     estimatedDelivery: '',
     notes: '',
+    shipmentType: '',
+    transportMethod: '',
+    cargoUnits: null as { type: string; quantity: number } | null,
   });
   const [updateData, setUpdateData] = useState({
     status: '',
@@ -122,7 +132,7 @@ export default function ShipmentsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       const response = await fetch('/api/shipments', {
         method: 'POST',
@@ -139,6 +149,9 @@ export default function ShipmentsPage() {
           destination: '',
           estimatedDelivery: '',
           notes: '',
+          shipmentType: '',
+          transportMethod: '',
+          cargoUnits: null,
         });
         setNewTrackingNumber(data.shipment.trackingNumber);
         setShowSuccessModal(true);
@@ -152,7 +165,7 @@ export default function ShipmentsPage() {
   const handleUpdateStatus = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedShipment) return;
-    
+
     try {
       const response = await fetch(`/api/shipments/${selectedShipment.id}`, {
         method: 'PATCH',
@@ -174,7 +187,7 @@ export default function ShipmentsPage() {
   const handleDelete = async (id: string) => {
     const confirmMessage = t('dashboard.shipments.confirmDelete') || 'Are you sure you want to delete this shipment?';
     if (!window.confirm(confirmMessage)) return;
-    
+
     try {
       const response = await fetch(`/api/shipments/${id}`, {
         method: 'DELETE',
@@ -204,6 +217,12 @@ export default function ShipmentsPage() {
     } catch (err) {
       console.error('Failed to copy:', err);
     }
+  }
+
+
+  const openDetailsModal = (shipment: Shipment) => {
+    setSelectedShipment(shipment);
+    setShowDetailsModal(true);
   };
 
   const getEmbedCode = (trackingNumber: string) => {
@@ -381,107 +400,121 @@ export default function ShipmentsPage() {
                       .toUpperCase()
                       .slice(0, 2);
                     return (
-                        <motion.tr
-                          key={shipment.id}
-                          variants={{
-                            hidden: { opacity: 0, y: 20 },
-                            show: { opacity: 1, y: 0 }
-                          }}
-                          whileHover={{ backgroundColor: 'rgba(208, 25, 25, 0.03)', scale: 1.001 }}
-                          className="border-b border-gray-100 transition-all duration-200 group"
-                        >
-                          <td className="p-5 align-middle">
-                            <Link
-                              href={`/${locale}/track/${shipment.trackingNumber}`}
-                              className="flex items-center gap-2 group/link"
-                            >
-                              <div className="w-10 h-10 rounded-lg bg-primary-red/10 flex items-center justify-center group-hover/link:bg-primary-red/20 transition-colors">
-                                <Package className="w-5 h-5 text-primary-red" />
-                              </div>
-                              <span className="font-bold text-primary-red group-hover/link:text-red-700 transition-colors text-sm">
-                                {shipment.trackingNumber}
-                              </span>
-                            </Link>
-                          </td>
-                          <td className="p-5 align-middle">
+                      <motion.tr
+                        key={shipment.id}
+                        variants={{
+                          hidden: { opacity: 0, y: 20 },
+                          show: { opacity: 1, y: 0 }
+                        }}
+                        whileHover={{ backgroundColor: 'rgba(208, 25, 25, 0.03)', scale: 1.001 }}
+                        className="border-b border-gray-100 transition-all duration-200 group"
+                      >
+                        <td className="p-5 align-middle">
+                          <Link
+                            href={`/${locale}/track/${shipment.trackingNumber}`}
+                            className="flex items-center gap-2 group/link"
+                          >
+                            <div className="w-10 h-10 rounded-lg bg-primary-red/10 flex items-center justify-center group-hover/link:bg-primary-red/20 transition-colors">
+                              <Package className="w-5 h-5 text-primary-red" />
+                            </div>
+                            <span className="font-bold text-primary-red group-hover/link:text-red-700 transition-colors text-sm">
+                              {shipment.trackingNumber}
+                            </span>
+                          </Link>
+                        </td>
+                        <td className="p-5 align-middle">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500/20 to-blue-500/10 flex items-center justify-center font-bold text-blue-600 text-xs shadow-sm">
+                              {customerInitials}
+                            </div>
+                            <span className="font-medium text-gray-900 group-hover:text-primary-red transition-colors">
+                              {shipment.customer.name}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="p-5 align-middle">
+                          <Badge
+                            className={`${statusColors.bg} ${statusColors.text} ${statusColors.border} border px-3 py-1.5 font-semibold text-xs shadow-sm`}
+                          >
                             <div className="flex items-center gap-2">
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500/20 to-blue-500/10 flex items-center justify-center font-bold text-blue-600 text-xs shadow-sm">
-                                {customerInitials}
-                              </div>
-                              <span className="font-medium text-gray-900 group-hover:text-primary-red transition-colors">
-                                {shipment.customer.name}
-                              </span>
+                              <div className={`w-2 h-2 rounded-full ${statusColors.bg.replace('bg-', 'bg-').replace('/50', '')} ${statusColors.border.replace('border-', 'border-')} border`} />
+                              {getStatusLabel(shipment.status, t)}
                             </div>
-                          </td>
-                          <td className="p-5 align-middle">
-                            <Badge
-                              className={`${statusColors.bg} ${statusColors.text} ${statusColors.border} border px-3 py-1.5 font-semibold text-xs shadow-sm`}
+                          </Badge>
+                        </td>
+                        <td className="p-5 align-middle">
+                          <div className="flex items-center gap-2 text-gray-700">
+                            <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+                              <MapPin className="w-5 h-5 text-orange-600" />
+                            </div>
+                            <span className="text-sm font-medium">{shipment.origin}</span>
+                          </div>
+                        </td>
+                        <td className="p-5 align-middle">
+                          <div className="flex items-center gap-2 text-gray-700">
+                            <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
+                              <MapPin className="w-5 h-5 text-green-600" />
+                            </div>
+                            <span className="text-sm font-medium">{shipment.destination}</span>
+                          </div>
+                        </td>
+                        <td className="p-5 align-middle">
+                          <div className="flex items-center gap-2 text-gray-700">
+                            <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
+                              <Calendar className="w-5 h-5 text-purple-600" />
+                            </div>
+                            <span className="text-sm font-medium">
+                              {format(new Date(shipment.createdAt), 'MMM dd, yyyy')}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="p-5 align-middle">
+                          <div className="flex items-center gap-2">
+                            <motion.div
+                              whileHover={{ scale: 1.15, y: -2 }}
+                              whileTap={{ scale: 0.95 }}
                             >
-                              <div className="flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${statusColors.bg.replace('bg-', 'bg-').replace('/50', '')} ${statusColors.border.replace('border-', 'border-')} border`} />
-                                {getStatusLabel(shipment.status, t)}
-                              </div>
-                            </Badge>
-                          </td>
-                          <td className="p-5 align-middle">
-                            <div className="flex items-center gap-2 text-gray-700">
-                              <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
-                                <MapPin className="w-5 h-5 text-orange-600" />
-                              </div>
-                              <span className="text-sm font-medium">{shipment.origin}</span>
-                            </div>
-                          </td>
-                          <td className="p-5 align-middle">
-                            <div className="flex items-center gap-2 text-gray-700">
-                              <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
-                                <MapPin className="w-5 h-5 text-green-600" />
-                              </div>
-                              <span className="text-sm font-medium">{shipment.destination}</span>
-                            </div>
-                          </td>
-                          <td className="p-5 align-middle">
-                            <div className="flex items-center gap-2 text-gray-700">
-                              <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
-                                <Calendar className="w-5 h-5 text-purple-600" />
-                              </div>
-                              <span className="text-sm font-medium">
-                                {format(new Date(shipment.createdAt), 'MMM dd, yyyy')}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="p-5 align-middle">
-                            <div className="flex items-center gap-2">
-                              <motion.div
-                                whileHover={{ scale: 1.15, y: -2 }}
-                                whileTap={{ scale: 0.95 }}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => openDetailsModal(shipment)}
+                                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                                title={t('common.view')}
                               >
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => openUpdateModal(shipment)}
-                                  className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                                  title={t('common.edit')}
-                                >
-                                  <Edit className="w-5 h-5" />
-                                </Button>
-                              </motion.div>
-                              <motion.div
-                                whileHover={{ scale: 1.15, y: -2 }}
-                                whileTap={{ scale: 0.95 }}
+                                <Package className="w-5 h-5" />
+                              </Button>
+                            </motion.div>
+                            <motion.div
+                              whileHover={{ scale: 1.15, y: -2 }}
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => openUpdateModal(shipment)}
+                                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                title={t('common.edit')}
                               >
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDelete(shipment.id)}
-                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                  title={t('common.delete')}
-                                >
-                                  <Trash2 className="w-5 h-5" />
-                                </Button>
-                              </motion.div>
-                            </div>
-                          </td>
-                        </motion.tr>
+                                <Edit className="w-5 h-5" />
+                              </Button>
+                            </motion.div>
+                            <motion.div
+                              whileHover={{ scale: 1.15, y: -2 }}
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDelete(shipment.id)}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                title={t('common.delete')}
+                              >
+                                <Trash2 className="w-5 h-5" />
+                              </Button>
+                            </motion.div>
+                          </div>
+                        </td>
+                      </motion.tr>
                     );
                   })}
                 </motion.tbody>
@@ -638,6 +671,25 @@ export default function ShipmentsPage() {
                     startIcon={<Calendar className="w-5 h-5" />}
                   />
 
+                  <div className="border-t border-gray-100 my-2" />
+
+                  <ShipmentTypeSelector
+                    value={formData.shipmentType}
+                    onChange={(value) => setFormData({ ...formData, shipmentType: value })}
+                  />
+
+                  <TransportMethodSelector
+                    value={formData.transportMethod}
+                    onChange={(value) => setFormData({ ...formData, transportMethod: value })}
+                  />
+
+                  <CargoUnitsSelector
+                    value={formData.cargoUnits}
+                    onChange={(value) => setFormData({ ...formData, cargoUnits: value })}
+                  />
+
+                  <div className="border-t border-gray-100 my-2" />
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       {t('dashboard.shipments.notes') || 'Notes'}
@@ -753,6 +805,126 @@ export default function ShipmentsPage() {
                     </Button>
                   </div>
                 </form>
+              </CardContent>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* View Details Modal */}
+      <AnimatePresence>
+        {showDetailsModal && selectedShipment && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowDetailsModal(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            >
+              <CardHeader className="border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Package className="w-5 h-5 text-primary-red" />
+                    {t('dashboard.shipments.viewDetails') || 'Shipment Details'}
+                  </CardTitle>
+                  <motion.button
+                    whileHover={{ rotate: 90, scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowDetailsModal(false)}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </motion.button>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-2xl font-mono font-bold text-soft-black">
+                    {selectedShipment.trackingNumber}
+                  </span>
+                  <Badge className={`${getStatusColor(selectedShipment.status).bg} ${getStatusColor(selectedShipment.status).text} border`}>
+                    {getStatusLabel(selectedShipment.status, t)}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+
+                {/* Route */}
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100">
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t('dashboard.shipments.origin')}</p>
+                    <p className="font-semibold text-gray-900">{selectedShipment.origin}</p>
+                  </div>
+                  <div className="flex-1 px-4 flex justify-center">
+                    <Truck className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t('dashboard.shipments.destination')}</p>
+                    <p className="font-semibold text-gray-900">{selectedShipment.destination}</p>
+                  </div>
+                </div>
+
+                {/* New Fields Display */}
+                <div className="grid grid-cols-1 gap-4">
+                  <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">{t('tracking.shipmentData') || 'Shipment Data'}</h3>
+                  {selectedShipment.shipmentType && (
+                    <div className="p-4 border border-gray-100 rounded-xl">
+                      <p className="text-sm text-gray-500 mb-1">{t('dashboard.shipments.shipmentType')}</p>
+                      <div className="flex items-center gap-2">
+                        <Package className="w-4 h-4 text-primary-red" />
+                        <span className="font-medium text-gray-900">{selectedShipment.shipmentType}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedShipment.transportMethod && (
+                    <div className="p-4 border border-gray-100 rounded-xl">
+                      <p className="text-sm text-gray-500 mb-1">{t('dashboard.shipments.transportMethod')}</p>
+                      <div className="flex items-center gap-2">
+                        <Truck className="w-4 h-4 text-primary-red" />
+                        <span className="font-medium text-gray-900">
+                          {t(`dashboard.shipments.transportMethods.${selectedShipment.transportMethod}.title`)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2 pl-6">
+                        {t(`dashboard.shipments.transportMethods.${selectedShipment.transportMethod}.description`)}
+                      </p>
+                    </div>
+                  )}
+
+                  {selectedShipment.cargoUnits && (
+                    <div className="p-4 border border-gray-100 rounded-xl">
+                      <p className="text-sm text-gray-500 mb-1">{t('dashboard.shipments.cargoUnits')}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs">
+                          {selectedShipment.cargoUnits.quantity}
+                        </span>
+                        <span className="font-medium text-gray-900">
+                          {t(`dashboard.shipments.cargoTypes.${selectedShipment.cargoUnits.type}`)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <Link
+                    href={`/${locale}/track/${selectedShipment.trackingNumber}`}
+                    className="w-full"
+                    target="_blank"
+                  >
+                    <Button variant="outline" className="w-full">
+                      {t('dashboard.shipments.viewTracking')}
+                    </Button>
+                  </Link>
+                </div>
+
               </CardContent>
             </motion.div>
           </motion.div>

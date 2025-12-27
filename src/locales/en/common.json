@@ -263,6 +263,68 @@
         "receiverAddress": "Receiver Address",
         "weight": "Weight (kg)",
         "content": "Content Description"
+      },
+      "shipmentType": "Shipment Type",
+      "shipmentTypePlaceholder": "e.g., Clothing, Medicine, Electronics",
+      "transportMethod": "Transport Method",
+      "transportMethodPlaceholder": "Select transport method",
+      "cargoUnits": "Cargo Units",
+      "cargoType": "Unit Type",
+      "cargoQuantity": "Quantity",
+      "transportMethods": {
+        "MULTIMODAL": {
+          "title": "Multimodal Transport",
+          "description": "A single shipment transported by multiple modes under one contract and one responsible party."
+        },
+        "INTERMODAL": {
+          "title": "Intermodal Transport",
+          "description": "A single shipment using multiple transport modes but with separate contracts and responsibilities."
+        },
+        "COMBINED": {
+          "title": "Combined Transport",
+          "description": "General term for using multiple transport modes without a precise legal framework."
+        },
+        "THROUGH": {
+          "title": "Through Transport",
+          "description": "Transport of cargo from origin to destination through consecutive stages, usually with one document."
+        },
+        "DOOR_TO_DOOR": {
+          "title": "Door-to-Door Transport",
+          "description": "Comprehensive service from sender to receiver using one or more modes."
+        },
+        "DOOR_TO_PORT": {
+          "title": "Door-to-Port Transport",
+          "description": "Shipping responsibility ends when cargo arrives at the port."
+        },
+        "PORT_TO_DOOR": {
+          "title": "Port-to-Door Transport",
+          "description": "Shipping responsibility starts from the port until the receiver's door."
+        },
+        "TRANSSHIPMENT": {
+          "title": "Transshipment",
+          "description": "Transfer of cargo through an intermediate point to change transport mode without final delivery."
+        },
+        "SEA_AIR": {
+          "title": "Sea-Air Transport",
+          "description": "Combination of sea and air to balance speed and cost."
+        },
+        "SEA_ROAD": {
+          "title": "Sea-Road Transport",
+          "description": "Sea transport followed by road transport to reach final destination."
+        },
+        "RAIL_ROAD": {
+          "title": "Rail-Road Transport",
+          "description": "Using trains with trucks in a single shipping journey."
+        },
+        "SEA_RAIL": {
+          "title": "Sea-Rail Transport",
+          "description": "Combining sea transport with railways for long distances with higher efficiency."
+        }
+      },
+      "cargoTypes": {
+        "containers": "Containers",
+        "parcels": "Parcels",
+        "cbm": "CBM (Cubic Meters)"
       }
     },
     "settings": {
@@ -313,6 +375,7 @@
   },
   "tracking": {
     "title": "Track Your Shipment",
+    "shipmentData": "Shipment Data",
     "enterTracking": "Enter tracking number",
     "search": "Search",
     "status": "Status",
@@ -320,7 +383,10 @@
     "destination": "Destination",
     "estimatedDelivery": "Estimated Delivery",
     "timeline": "Timeline",
-    "notFound": "Shipment not found"
+    "notFound": "Shipment not found",
+    "shipmentType": "Shipment Type",
+    "transportMethod": "Transport Method",
+    "cargoUnits": "Cargo Units"
   },
   "common": {
     "save": "Save",

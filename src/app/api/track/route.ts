@@ -74,6 +74,9 @@ export async function GET(request: NextRequest) {
       estimatedDelivery: shipment.estimatedDelivery,
       actualDelivery: shipment.actualDelivery,
       timeline: shipment.timeline,
+      shipmentType: shipment.shipmentType,
+      transportMethod: shipment.transportMethod,
+      cargoUnits: shipment.cargoUnits,
       customer: {
         name: shipment.customer.name,
       },

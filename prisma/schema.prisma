@@ -71,6 +71,12 @@ model Shipment {
   actualDelivery  DateTime?
   notes           String?
   timeline        Json            @default("[]")
+  
+  // Enhancement fields
+  shipmentType    String?         // e.g., "Clothing", "Medicine", "Electronics"
+  transportMethod String?         // e.g., "MULTIMODAL", "DOOR_TO_DOOR"
+  cargoUnits      Json?           // { type: "containers|parcels|cbm", quantity: number }
+  
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   

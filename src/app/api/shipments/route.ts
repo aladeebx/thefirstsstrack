@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { customerId, origin, destination, estimatedDelivery, notes } = body;
+    const { customerId, origin, destination, estimatedDelivery, notes, shipmentType, transportMethod, cargoUnits } = body;
 
     // Validate required fields
     if (!customerId || !origin || !destination) {
@@ -163,6 +163,9 @@ export async function POST(request: NextRequest) {
         status: 'PENDING',
         estimatedDelivery: estimatedDelivery ? new Date(estimatedDelivery) : null,
         notes: notes || null,
+        shipmentType: shipmentType || null,
+        transportMethod: transportMethod || null,
+        cargoUnits: cargoUnits || null,
         timeline,
       },
       include: {

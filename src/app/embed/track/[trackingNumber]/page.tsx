@@ -1,8 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { format } from 'date-fns';
-import { MapPin, Truck, CheckCircle2, Clock } from 'lucide-react';
+import {
+  MapPin,
+  Truck,
+  Package,
+  Box,
+  Anchor,
+  Layers
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface TimelineItem {
   status: string;
@@ -19,6 +28,9 @@ interface TrackingData {
   currentLocation: string | null;
   estimatedDelivery: string | null;
   timeline: TimelineItem[];
+  shipmentType?: string;
+  transportMethod?: string;
+  cargoUnits?: { type: string; quantity: number };
   customer: {
     name: string;
   };
@@ -28,6 +40,7 @@ interface TrackingData {
 }
 
 export default function EmbedTrackingPage({ params }: { params: { trackingNumber: string } }) {
+  const t = useTranslations();
   const [trackingData, setTrackingData] = useState<TrackingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -39,13 +52,10 @@ export default function EmbedTrackingPage({ params }: { params: { trackingNumber
   const fetchTrackingData = async () => {
     try {
       const response = await fetch(`/api/track/${params.trackingNumber}`);
-
       if (!response.ok) {
         setError('Shipment not found');
-        setLoading(false);
         return;
       }
-
       const data = await response.json();
       setTrackingData(data);
     } catch (err) {
@@ -57,96 +67,216 @@ export default function EmbedTrackingPage({ params }: { params: { trackingNumber
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-transparent">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D01919]"></div>
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-50">
+        <div className="w-8 h-8 border-4 border-[#D01919] border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-xs font-medium text-gray-500 uppercase tracking-widest">{t('common.loading')}</p>
       </div>
     );
   }
 
   if (error || !trackingData) {
     return (
-      <div className="flex flex-col items-center justify-center p-6 bg-gray-50 rounded-xl border border-gray-200 h-full text-center">
-        <h2 className="text-[#111111] font-bold text-lg mb-1">Status Unavailable</h2>
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-50 p-6 text-center">
+        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+          <Package className="w-6 h-6 text-gray-400" />
+        </div>
+        <h3 className="text-gray-900 font-bold mb-1">{t('tracking.notFound')}</h3>
         <p className="text-gray-500 text-sm">{error}</p>
       </div>
     );
   }
 
   const isDelivered = trackingData.status.toLowerCase() === 'delivered';
+  const progressWidth = isDelivered ? '100%' : '60%';
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden border border-gray-200 font-sans shadow-sm w-full max-w-md mx-auto h-full flex flex-col">
-      {/* Header */}
-      <div className="bg-[#111111] text-white p-4 flex justify-between items-center shrink-0">
-        <div>
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-0.5">Tracking ID</p>
-          <h1 className="text-lg font-mono font-bold">{trackingData.trackingNumber}</h1>
-        </div>
-        <div className={`px-2 py-1 rounded-md text-xs font-bold uppercase ${isDelivered ? 'bg-green-500 text-white' : 'bg-[#D01919] text-white'}`}>
-          {trackingData.status}
-        </div>
-      </div>
+    <div className="h-screen w-full bg-gray-50 flex flex-col font-sans overflow-hidden">
 
-      {/* Progress / Status */}
-      <div className="p-5 bg-gray-50 border-b border-gray-100 shrink-0">
-        <div className="flex justify-between items-center mb-4 text-sm">
-          <div className="text-center">
-            <div className="text-xs text-gray-400 uppercase mb-1">From</div>
-            <div className="font-bold text-[#111111]">{trackingData.origin}</div>
-          </div>
-          <div className="flex-1 mx-3 flex flex-col items-center">
-            <div className="w-full h-0.5 bg-gray-200 relative top-1.5"></div>
-            <Truck className={`w-4 h-4 text-[#D01919] relative z-10 bg-gray-50 px-0.5 mt-0`} />
-          </div>
-          <div className="text-center">
-            <div className="text-xs text-gray-400 uppercase mb-1">To</div>
-            <div className="font-bold text-[#111111]">{trackingData.destination}</div>
-          </div>
-        </div>
-        {trackingData.estimatedDelivery && (
-          <div className="flex items-center justify-center gap-2 text-xs text-gray-600 bg-white py-2 rounded-lg border border-gray-100">
-            <Clock className="w-3.5 h-3.5 text-[#D01919]" />
-            <span>Est. Delivery: <strong>{format(new Date(trackingData.estimatedDelivery), 'MMM dd, yyyy')}</strong></span>
-          </div>
-        )}
-      </div>
+      {/* 1. Header Card (Dark Mode) */}
+      <div className="bg-[#111111] p-6 pb-8 shadow-xl z-10 shrink-0 relative overflow-hidden text-white">
+        {/* Background Decorations */}
+        <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-[#D01919]/10 rounded-full blur-[60px] -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-[150px] h-[150px] bg-[#D01919]/5 rounded-full blur-[50px] translate-y-1/3 -translate-x-1/4 pointer-events-none"></div>
 
-      {/* Timeline (Scrollable) */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-5 custom-scrollbar">
-        {trackingData.timeline.map((item, index) => (
-          <div key={index} className="flex gap-3 relative">
-            {/* Connector Line */}
-            {index !== trackingData.timeline.length - 1 && (
-              <div className="absolute left-[7px] top-4 bottom-[-20px] w-0.5 bg-gray-100"></div>
-            )}
-
-            {/* Dot */}
-            <div className={`w-4 h-4 rounded-full border-2 shrink-0 z-10 ${index === 0 ? 'bg-white border-[#D01919]' : 'bg-gray-100 border-gray-300'}`}></div>
-
-            <div className="pb-1">
-              <div className="flex justify-between items-baseline gap-2">
-                <p className={`text-sm font-bold leading-none ${index === 0 ? 'text-[#111111]' : 'text-gray-600'}`}>
-                  {item.status}
-                </p>
-                <span className="text-[10px] text-gray-400 whitespace-nowrap">
-                  {format(new Date(item.timestamp), 'MMM dd, HH:mm')}
-                </span>
+        <div className="relative z-10">
+          <div className="flex justify-between items-start mb-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D01919] animate-pulse"></span>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">TRAKOSHIP TRACKING</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">{item.description}</p>
-              {item.location && (
-                <div className="flex items-center gap-1 text-[10px] text-gray-400 mt-1 font-medium">
-                  <MapPin className="w-3 h-3" /> {item.location}
-                </div>
-              )}
+              <h1 className="text-2xl font-mono font-bold text-white tracking-tight">
+                {trackingData.trackingNumber}
+              </h1>
+            </div>
+            <div className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${isDelivered
+              ? 'bg-green-500/10 text-green-400 border-green-500/20'
+              : 'bg-[#D01919]/10 text-[#D01919] border-[#D01919]/20'
+              }`}>
+              {trackingData.status}
             </div>
           </div>
-        ))}
+
+          {/* Route Visualization */}
+          <div className="relative pt-2 pb-2">
+            <div className="flex justify-between items-end mb-3">
+              <span className="text-sm font-bold text-white">{trackingData.origin}</span>
+              <span className="text-sm font-bold text-white">{trackingData.destination}</span>
+            </div>
+
+            {/* Progress Bar Track */}
+            <div className="relative h-1.5 bg-gray-800 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: progressWidth }}
+                transition={{ duration: 1, delay: 0.2 }}
+                className="absolute left-0 top-0 h-full bg-[#D01919]"
+              />
+            </div>
+
+            <div className="flex justify-between mt-2 text-[10px] text-gray-500 font-medium uppercase tracking-wider">
+              <span>{t('tracking.origin')}</span>
+              <span>{t('tracking.destination')}</span>
+            </div>
+
+            {/* Truck Icon on Progress */}
+            {!isDelivered && (
+              <motion.div
+                initial={{ left: '0%' }}
+                animate={{ left: '60%' }}
+                transition={{ duration: 1, delay: 0.2 }}
+                className="absolute top-[28px] -translate-x-1/2 bg-[#111111] p-1.5 rounded-full shadow-lg border border-gray-700"
+              >
+                <Truck className="w-3.5 h-3.5 text-[#D01919]" />
+              </motion.div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Footer */}
-      <div className="p-3 bg-white border-t border-gray-100 text-center text-[10px] text-gray-400 shrink-0">
-        Powered by <strong className="text-[#111111]">TrakoShip</strong>
+      {/* 2. Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar bg-gray-50">
+        <div className="p-5 space-y-6">
+
+          {/* Shipment Data Grid */}
+          {(trackingData.shipmentType || trackingData.transportMethod || trackingData.cargoUnits) && (
+            <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+              <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <Layers className="w-3.5 h-3.5" />
+                {t('tracking.shipmentData') || 'SHIPMENT DATA'}
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {trackingData.shipmentType && (
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-blue-50/50 border border-blue-100/50">
+                    <div className="w-8 h-8 rounded-lg bg-blue-100/50 flex items-center justify-center flex-shrink-0">
+                      <Box className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[10px] text-gray-500 mb-0.5">{t('tracking.shipmentType')}</div>
+                      <div className="text-xs font-bold text-gray-900 truncate" title={trackingData.shipmentType}>
+                        {trackingData.shipmentType}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {trackingData.transportMethod && (
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-red-50/50 border border-red-100/50">
+                    <div className="w-8 h-8 rounded-lg bg-[#D01919]/10 flex items-center justify-center flex-shrink-0">
+                      <Anchor className="w-4 h-4 text-[#D01919]" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[10px] text-gray-500 mb-0.5">{t('tracking.transportMethod')}</div>
+                      <div className="text-xs font-bold text-gray-900 truncate">
+                        {t(`dashboard.shipments.transportMethods.${trackingData.transportMethod}.title`).split(' ')[0]}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {trackingData.cargoUnits && (
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-purple-50/50 border border-purple-100/50">
+                    <div className="w-8 h-8 rounded-lg bg-purple-100/50 flex items-center justify-center flex-shrink-0">
+                      <Package className="w-4 h-4 text-purple-600" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[10px] text-gray-500 mb-0.5">{t('tracking.cargoUnits')}</div>
+                      <div className="text-xs font-bold text-gray-900 truncate">
+                        {trackingData.cargoUnits.quantity} {t(`dashboard.shipments.cargoTypes.${trackingData.cargoUnits.type}`)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Timeline */}
+          <div className="space-y-4">
+            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">
+              {t('tracking.timeline')}
+            </h3>
+
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+              <div className="relative pl-2">
+                {/* Vertical Line */}
+                <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
+
+                {trackingData.timeline.map((item, index) => (
+                  <div key={index} className="relative flex gap-5 mb-8 last:mb-0 group">
+                    {/* Dot */}
+                    <div className={`
+                      w-4 h-4 rounded-full border-[3px] shrink-0 z-10 relative box-content
+                      ${index === 0
+                        ? 'bg-white border-[#D01919] shadow-[0_0_0_4px_rgba(208,25,25,0.1)]'
+                        : 'bg-gray-100 border-gray-300'
+                      }
+                    `}></div>
+
+                    <div className="flex-1 -mt-1.5">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 mb-1">
+                        <p className={`text-sm font-bold ${index === 0 ? 'text-[#D01919]' : 'text-[#111111]'}`}>
+                          {item.status}
+                        </p>
+                        <span className="text-[10px] font-medium text-gray-400 font-mono bg-gray-50 px-2 py-0.5 rounded-md self-start">
+                          {format(new Date(item.timestamp), 'MMM dd, HH:mm')}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                        {item.description}
+                      </p>
+
+                      {item.location && (
+                        <div className="flex items-center gap-1.5 mt-2 text-[10px] text-gray-400 font-semibold uppercase tracking-wide">
+                          <MapPin className="w-3 h-3" />
+                          {item.location}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
+
+      {/* 3. Footer */}
+      <div className="bg-white border-t border-gray-100 p-3 shrink-0">
+        <a
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-1.5 text-[10px] text-gray-400 hover:text-[#D01919] transition-colors"
+        >
+          <span>Powered by</span>
+          <span className="font-bold text-[#111111]">TrakoShip</span>
+        </a>
+      </div>
+
     </div>
   );
 }

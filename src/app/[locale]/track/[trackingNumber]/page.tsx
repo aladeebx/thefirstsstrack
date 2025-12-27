@@ -25,6 +25,9 @@ interface TrackingData {
   estimatedDelivery: string | null;
   actualDelivery: string | null;
   timeline: TimelineItem[];
+  shipmentType?: string;
+  transportMethod?: string;
+  cargoUnits?: { type: string; quantity: number };
   customer: {
     name: string;
   };
@@ -223,6 +226,68 @@ export default function TrackingPage({ params }: { params: { trackingNumber: str
             </div>
           </motion.div>
 
+          {/* New Shipment Details Section */}
+          {(trackingData.shipmentType || trackingData.transportMethod || trackingData.cargoUnits) && (
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-[#111111]">{t('tracking.shipmentData') || 'Shipment Data'}</h2>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4"
+              >
+                {trackingData.shipmentType && (
+                  <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                        <Package className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-500 mb-1">{t('tracking.shipmentType')}</p>
+                        <p className="text-lg font-bold text-[#111111]">{trackingData.shipmentType}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {trackingData.transportMethod && (
+                  <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-[#D01919]/10 flex items-center justify-center flex-shrink-0">
+                        <Truck className="w-6 h-6 text-[#D01919]" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-500 mb-1">{t('tracking.transportMethod')}</p>
+                        <p className="text-base font-bold text-[#111111]">
+                          {t(`dashboard.shipments.transportMethods.${trackingData.transportMethod}.title`)}
+                        </p>
+                        <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                          {t(`dashboard.shipments.transportMethods.${trackingData.transportMethod}.description`)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {trackingData.cargoUnits && (
+                  <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+                        <Package className="w-6 h-6 text-purple-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-500 mb-1">{t('tracking.cargoUnits')}</p>
+                        <p className="text-lg font-bold text-[#111111]">
+                          {trackingData.cargoUnits.quantity} {t(`dashboard.shipments.cargoTypes.${trackingData.cargoUnits.type}`)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+          )}
+
           {/* Timeline Section */}
           <div className="grid grid-cols-1 lg:grid-cols-[1fr,350px] gap-8">
             <div className="space-y-6">
@@ -248,8 +313,8 @@ export default function TrackingPage({ params }: { params: { trackingNumber: str
                       {/* Timeline Dot */}
                       <div className="flex-shrink-0 w-8 flex justify-center pt-1 z-10">
                         <div className={`w-4 h-4 rounded-full border-[3px] box-content ${index === 0
-                            ? 'bg-white border-[#D01919] shadow-[0_0_0_4px_rgba(208,25,25,0.15)]'
-                            : 'bg-gray-100 border-gray-300'
+                          ? 'bg-white border-[#D01919] shadow-[0_0_0_4px_rgba(208,25,25,0.15)]'
+                          : 'bg-gray-100 border-gray-300'
                           }`}></div>
                       </div>
 

@@ -24,7 +24,7 @@ export async function GET(
     }
 
     // Build where clause - if userId is provided, filter by it
-    const whereClause: any = userId 
+    const whereClause: any = userId
       ? { trackingNumber, userId }
       : { trackingNumber };
 
@@ -69,6 +69,9 @@ export async function GET(
       company: {
         name: shipment.user.companyName,
       },
+      shipmentType: shipment.shipmentType,
+      transportMethod: shipment.transportMethod,
+      cargoUnits: shipment.cargoUnits,
       createdAt: shipment.createdAt,
       updatedAt: shipment.updatedAt,
     });
