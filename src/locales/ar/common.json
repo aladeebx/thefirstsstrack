@@ -233,6 +233,13 @@
       "selectStatus": "اختر الحالة...",
       "currentLocation": "الموقع الحالي",
       "currentLocationPlaceholder": "اختياري",
+      "timelineNotes": "ملاحظات (اختياري)",
+      "timelineNotesPlaceholder": "أضف ملاحظات لتحديث الحالة هذا...",
+      "images": "الصور (اختياري، حتى 20 صورة)",
+      "clickToUpload": "انقر للرفع",
+      "orDragDrop": "أو اسحب وأفلت",
+      "imageLimit": "PNG, JPG, GIF حتى 10MB (حد أقصى 20 صورة)",
+      "imagesSelected": "صورة محددة",
       "confirmDelete": "هل أنت متأكد من حذف هذه الشحنة؟",
       "trackingUrl": "رابط التتبع",
       "embedCode": "كود التضمين (Widget)",
@@ -386,7 +393,10 @@
     "notFound": "الشحنة غير موجودة",
     "shipmentType": "نوع الشحنة",
     "transportMethod": "آلية النقل",
-    "cargoUnits": "وحدات الشحن"
+    "cargoUnits": "وحدات الشحن",
+    "notes": "ملاحظات",
+    "images": "الصور",
+    "downloadImage": "تنزيل الصورة"
   },
   "common": {
     "save": "حفظ",

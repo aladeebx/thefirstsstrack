@@ -26,7 +26,10 @@ import {
   Clock,
   Info,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Image as ImageIcon,
+  Download,
+  FileText
 } from 'lucide-react';
 
 interface TrackingData {
@@ -532,7 +535,58 @@ function SearchWidgetContent() {
                         {item.description && (
                           <p className="text-sm text-gray-600 mb-2">{item.description}</p>
                         )}
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                        
+                        {/* Notes */}
+                        {item.notes && (
+                          <div className="mt-3 p-3 bg-white rounded-lg border border-gray-200 mb-2">
+                            <div className="flex items-start gap-2 mb-1">
+                              <FileText className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Notes</p>
+                            </div>
+                            <p className="text-sm text-gray-700 whitespace-pre-wrap">{item.notes}</p>
+                          </div>
+                        )}
+
+                        {/* Images */}
+                        {item.images && item.images.length > 0 && (
+                          <div className="mt-3 space-y-2">
+                            <div className="flex items-center gap-2 mb-2">
+                              <ImageIcon className="w-4 h-4 text-gray-500" />
+                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                                Images ({item.images.length})
+                              </p>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                              {item.images.map((image: string, imgIndex: number) => (
+                                <div key={imgIndex} className="relative group">
+                                  <img
+                                    src={image}
+                                    alt={`Status update image ${imgIndex + 1}`}
+                                    className="w-full h-24 object-cover rounded-lg border border-gray-200 cursor-pointer hover:border-primary-red transition-colors"
+                                    onClick={() => window.open(image, '_blank')}
+                                  />
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const link = document.createElement('a');
+                                      link.href = image;
+                                      link.download = `shipment-${trackingData.trackingNumber}-${index}-${imgIndex + 1}.jpg`;
+                                      document.body.appendChild(link);
+                                      link.click();
+                                      document.body.removeChild(link);
+                                    }}
+                                    className="absolute top-1 right-1 p-1.5 bg-primary-red text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                                    title="Download image"
+                                  >
+                                    <Download className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2 text-xs text-gray-500 mt-2">
                           <Clock className="w-3 h-3" />
                           {format(new Date(item.timestamp), 'MMM dd, yyyy - hh:mm a')}
                         </div>

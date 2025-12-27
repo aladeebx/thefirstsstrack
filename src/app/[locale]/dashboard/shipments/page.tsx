@@ -17,7 +17,10 @@ import {
   Calendar,
   User,
   Truck,
-  AlertCircle
+  AlertCircle,
+  Image as ImageIcon,
+  XCircle,
+  Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -101,7 +104,11 @@ export default function ShipmentsPage() {
   const [updateData, setUpdateData] = useState({
     status: '',
     currentLocation: '',
+    timelineNotes: '',
+    images: [] as string[],
   });
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   useEffect(() => {
     fetchShipments();
@@ -167,16 +174,26 @@ export default function ShipmentsPage() {
     if (!selectedShipment) return;
 
     try {
+      // Convert images to base64
+      const base64Images = await convertImagesToBase64(imageFiles);
+      
+      const payload = {
+        ...updateData,
+        images: base64Images,
+      };
+
       const response = await fetch(`/api/shipments/${selectedShipment.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
         setShowUpdateModal(false);
         setSelectedShipment(null);
-        setUpdateData({ status: '', currentLocation: '' });
+        setUpdateData({ status: '', currentLocation: '', timelineNotes: '', images: [] });
+        setImageFiles([]);
+        setImagePreviews([]);
         fetchShipments();
       }
     } catch (error) {
@@ -206,8 +223,67 @@ export default function ShipmentsPage() {
     setUpdateData({
       status: shipment.status,
       currentLocation: '',
+      timelineNotes: '',
+      images: [],
     });
+    setImageFiles([]);
+    setImagePreviews([]);
     setShowUpdateModal(true);
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    // Limit to 20 images total
+    const remainingSlots = 20 - imageFiles.length;
+    const filesToAdd = files.slice(0, remainingSlots);
+    
+    if (filesToAdd.length < files.length) {
+      alert(`يمكن إضافة 20 صورة كحد أقصى. سيتم إضافة ${filesToAdd.length} صورة فقط.`);
+    }
+
+    const newFiles = [...imageFiles, ...filesToAdd];
+    setImageFiles(newFiles);
+
+    // Create previews
+    const newPreviews: string[] = [];
+    filesToAdd.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        newPreviews.push(result);
+        if (newPreviews.length === filesToAdd.length) {
+          setImagePreviews([...imagePreviews, ...newPreviews]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    const newFiles = imageFiles.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setImageFiles(newFiles);
+    setImagePreviews(newPreviews);
+    // Update images in updateData
+    const newImages = updateData.images.filter((_, i) => i !== index);
+    setUpdateData({ ...updateData, images: newImages });
+  };
+
+  const convertImagesToBase64 = async (files: File[]): Promise<string[]> => {
+    return Promise.all(
+      files.map((file) => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve(reader.result as string);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      })
+    );
   };
 
   const copyToClipboard = async (text: string, label: string) => {
@@ -790,6 +866,72 @@ export default function ShipmentsPage() {
                     placeholder={t('dashboard.shipments.currentLocationPlaceholder') || 'Optional'}
                     startIcon={<MapPin className="w-5 h-5" />}
                   />
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('dashboard.shipments.timelineNotes') || 'Notes (Optional)'}
+                    </label>
+                    <textarea
+                      className="w-full min-h-[100px] px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-red focus:border-primary-red outline-none transition-all resize-none"
+                      value={updateData.timelineNotes}
+                      onChange={(e) => setUpdateData({ ...updateData, timelineNotes: e.target.value })}
+                      placeholder={t('dashboard.shipments.timelineNotesPlaceholder') || 'Add notes for this status update...'}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('dashboard.shipments.images') || 'Images (Optional, up to 20)'}
+                    </label>
+                    <div className="space-y-3">
+                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <ImageIcon className="w-8 h-8 mb-2 text-gray-400" />
+                          <p className="mb-2 text-sm text-gray-500">
+                            <span className="font-semibold">{t('dashboard.shipments.clickToUpload') || 'Click to upload'}</span> {t('dashboard.shipments.orDragDrop') || 'or drag and drop'}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {t('dashboard.shipments.imageLimit') || 'PNG, JPG, GIF up to 10MB (max 20 images)'}
+                          </p>
+                        </div>
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          multiple
+                          onChange={handleImageSelect}
+                          disabled={imageFiles.length >= 20}
+                        />
+                      </label>
+
+                      {imagePreviews.length > 0 && (
+                        <div className="grid grid-cols-4 gap-2">
+                          {imagePreviews.map((preview, index) => (
+                            <div key={index} className="relative group">
+                              <img
+                                src={preview}
+                                alt={`Preview ${index + 1}`}
+                                className="w-full h-24 object-cover rounded-lg border border-gray-200"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeImage(index)}
+                                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <XCircle className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {imageFiles.length > 0 && (
+                        <p className="text-xs text-gray-500">
+                          {imageFiles.length} / 20 {t('dashboard.shipments.imagesSelected') || 'images selected'}
+                        </p>
+                      )}
+                    </div>
+                  </div>
 
                   <div className="flex gap-3 pt-4">
                     <Button

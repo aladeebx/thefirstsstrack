@@ -9,7 +9,10 @@ import {
   Package,
   Box,
   Anchor,
-  Layers
+  Layers,
+  Image as ImageIcon,
+  Download,
+  FileText
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -18,6 +21,8 @@ interface TimelineItem {
   timestamp: string;
   location: string;
   description: string;
+  notes?: string;
+  images?: string[];
 }
 
 interface TrackingData {
@@ -252,6 +257,56 @@ export default function EmbedTrackingPage({ params }: { params: { trackingNumber
                         <div className="flex items-center gap-1.5 mt-2 text-[10px] text-gray-400 font-semibold uppercase tracking-wide">
                           <MapPin className="w-3 h-3" />
                           {item.location}
+                        </div>
+                      )}
+
+                      {/* Notes */}
+                      {item.notes && (
+                        <div className="mt-3 p-2.5 bg-gray-50 rounded-lg border border-gray-200">
+                          <div className="flex items-start gap-1.5 mb-1">
+                            <FileText className="w-3 h-3 text-gray-500 mt-0.5 flex-shrink-0" />
+                            <p className="text-[10px] font-semibold text-gray-600 uppercase tracking-wide">{t('tracking.notes') || 'Notes'}</p>
+                          </div>
+                          <p className="text-xs text-gray-700 whitespace-pre-wrap leading-relaxed">{item.notes}</p>
+                        </div>
+                      )}
+
+                      {/* Images */}
+                      {item.images && item.images.length > 0 && (
+                        <div className="mt-3 space-y-2">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <ImageIcon className="w-3 h-3 text-gray-500" />
+                            <p className="text-[10px] font-semibold text-gray-600 uppercase tracking-wide">
+                              {t('tracking.images') || 'Images'} ({item.images.length})
+                            </p>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                            {item.images.map((image, imgIndex) => (
+                              <div key={imgIndex} className="relative group">
+                                <img
+                                  src={image}
+                                  alt={`Status update image ${imgIndex + 1}`}
+                                  className="w-full h-20 object-cover rounded-lg border border-gray-200 cursor-pointer hover:border-[#D01919] transition-colors"
+                                  onClick={() => window.open(image, '_blank')}
+                                />
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const link = document.createElement('a');
+                                    link.href = image;
+                                    link.download = `shipment-${trackingData.trackingNumber}-${index}-${imgIndex + 1}.jpg`;
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                  }}
+                                  className="absolute top-0.5 right-0.5 p-1 bg-[#D01919] text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                                  title={t('tracking.downloadImage') || 'Download image'}
+                                >
+                                  <Download className="w-2.5 h-2.5" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>

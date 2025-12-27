@@ -85,7 +85,7 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { status, currentLocation, notes, estimatedDelivery } = body;
+    const { status, currentLocation, notes, estimatedDelivery, timelineNotes, images } = body;
 
     // Prepare update data
     const updateData: any = {
@@ -101,12 +101,31 @@ export async function PATCH(
         ? existingShipment.timeline 
         : [];
       
-      timeline.push({
+      // Create timeline entry with notes and images
+      const timelineEntry: any = {
         status,
         timestamp: new Date().toISOString(),
         location: currentLocation || existingShipment.currentLocation || '',
         description: `Status updated to ${status}`,
-      });
+      };
+
+      // Add notes if provided
+      if (timelineNotes && timelineNotes.trim()) {
+        timelineEntry.notes = timelineNotes.trim();
+      }
+
+      // Add images if provided (array of base64 strings)
+      if (images && Array.isArray(images) && images.length > 0) {
+        // Validate images array (max 20 images, each should be base64 string)
+        const validImages = images
+          .slice(0, 20)
+          .filter((img: any) => typeof img === 'string' && img.startsWith('data:image/'));
+        if (validImages.length > 0) {
+          timelineEntry.images = validImages;
+        }
+      }
+
+      timeline.push(timelineEntry);
 
       updateData.status = status;
       updateData.timeline = timeline;

@@ -233,6 +233,13 @@
       "selectStatus": "Select status...",
       "currentLocation": "Current Location",
       "currentLocationPlaceholder": "Optional",
+      "timelineNotes": "Notes (Optional)",
+      "timelineNotesPlaceholder": "Add notes for this status update...",
+      "images": "Images (Optional, up to 20)",
+      "clickToUpload": "Click to upload",
+      "orDragDrop": "or drag and drop",
+      "imageLimit": "PNG, JPG, GIF up to 10MB (max 20 images)",
+      "imagesSelected": "images selected",
       "confirmDelete": "Are you sure you want to delete this shipment?",
       "trackingUrl": "Tracking URL",
       "embedCode": "Embed Code (Widget)",
@@ -386,7 +393,10 @@
     "notFound": "Shipment not found",
     "shipmentType": "Shipment Type",
     "transportMethod": "Transport Method",
-    "cargoUnits": "Cargo Units"
+    "cargoUnits": "Cargo Units",
+    "notes": "Notes",
+    "images": "Images",
+    "downloadImage": "Download image"
   },
   "common": {
     "save": "Save",

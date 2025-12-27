@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/Badge';
-import { MapPin, Calendar, Truck, Clock, Package, CheckCircle2, ArrowRight } from 'lucide-react';
+import { MapPin, Calendar, Truck, Clock, Package, CheckCircle2, ArrowRight, Image as ImageIcon, Download, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface TimelineItem {
@@ -14,6 +14,8 @@ interface TimelineItem {
   timestamp: string;
   location: string;
   description: string;
+  notes?: string;
+  images?: string[];
 }
 
 interface TrackingData {
@@ -330,9 +332,59 @@ export default function TrackingPage({ params }: { params: { trackingNumber: str
                         </div>
                         <p className="text-gray-500 text-sm mb-2">{item.description}</p>
                         {item.location && (
-                          <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                          <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                             <MapPin className="w-3.5 h-3.5" />
                             {item.location}
+                          </div>
+                        )}
+                        
+                        {/* Notes */}
+                        {item.notes && (
+                          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <div className="flex items-start gap-2 mb-1">
+                              <FileText className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('tracking.notes') || 'Notes'}</p>
+                            </div>
+                            <p className="text-sm text-gray-700 whitespace-pre-wrap">{item.notes}</p>
+                          </div>
+                        )}
+
+                        {/* Images */}
+                        {item.images && item.images.length > 0 && (
+                          <div className="mt-3 space-y-2">
+                            <div className="flex items-center gap-2 mb-2">
+                              <ImageIcon className="w-4 h-4 text-gray-500" />
+                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                                {t('tracking.images') || 'Images'} ({item.images.length})
+                              </p>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                              {item.images.map((image, imgIndex) => (
+                                <div key={imgIndex} className="relative group">
+                                  <img
+                                    src={image}
+                                    alt={`Status update image ${imgIndex + 1}`}
+                                    className="w-full h-24 object-cover rounded-lg border border-gray-200 cursor-pointer hover:border-[#D01919] transition-colors"
+                                    onClick={() => window.open(image, '_blank')}
+                                  />
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const link = document.createElement('a');
+                                      link.href = image;
+                                      link.download = `shipment-${trackingData.trackingNumber}-${index}-${imgIndex + 1}.jpg`;
+                                      document.body.appendChild(link);
+                                      link.click();
+                                      document.body.removeChild(link);
+                                    }}
+                                    className="absolute top-1 right-1 p-1.5 bg-[#D01919] text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                                    title={t('tracking.downloadImage') || 'Download image'}
+                                  >
+                                    <Download className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>
